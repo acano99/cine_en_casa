@@ -13,13 +13,12 @@ class ScannerService {
       if (await dir.exists()) {
         await for (final entity in dir.list(recursive: false, followLinks: false)) {
           if (entity is Directory) {
-            // Obtenemos solo el nombre de la carpeta (sin toda la ruta)
             final name = entity.uri.pathSegments
                 .where((segment) => segment.isNotEmpty)
                 .last;
 
-            // Filtramos carpetas ocultas y archivos especiales de Windows/Linux
-            if (!name.startsWith('.') && !name.startsWith('$')) {
+            // Filtramos carpetas ocultas y archivos especiales con r'$'
+            if (!name.startsWith('.') && !name.startsWith(r'$')) {
               uniqueFolders.add(name);
             }
           }
@@ -28,7 +27,6 @@ class ScannerService {
     }
 
     final sortedList = uniqueFolders.toList();
-    // Orden alfabético insensible a mayúsculas
     sortedList.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
     return sortedList;

@@ -18,7 +18,6 @@ class CatalogCubit extends Cubit<CatalogState> {
 
   void removeDirectorySlot(int index) {
     if (state.directories.length <= 1) {
-      // Si solo queda una casilla, solo la vaciamos
       emit(state.copyWith(directories: ['']));
       return;
     }
@@ -35,7 +34,8 @@ class CatalogCubit extends Cubit<CatalogState> {
   }
 
   Future<void> pickDirectory(int index) async {
-    final selectedPath = await FilePicker.platform.getDirectoryPath(
+    // Uso directo de la API moderna de file_picker
+    final selectedPath = await FilePicker.getDirectoryPath(
       dialogTitle: 'Selecciona una carpeta para el catálogo',
     );
 
