@@ -1,0 +1,39 @@
+name: Build Windows Release
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Permite disparar la compilación manualmente con un clic en GitHub
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Habilitar Desktop en Windows
+        run: flutter config --enable-windows-desktop
+
+      - name: Obtener dependencias
+        run: flutter pub get
+
+      - name: Compilar ejecutable Release para Windows
+        run: flutter build windows --release
+
+      - name: Comprimir salida en ZIP
+        run: |
+          Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath build\cine_en_casa_windows.zip
+
+      - name: Subir binario como Artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: CineEnCasa-Windows
+          path: build/cine_en_casa_windows.zip
